@@ -218,7 +218,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 61c040a311d0f9a4abb46001738e4063, type: 2}
+  - {fileID: 2100000, guid: b5c85b835895faf43818575b696cedf0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -255,13 +255,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 847355776}
-  m_LocalRotation: {x: -0, y: 0.6674142, z: -0, w: 0.7446868}
+  m_LocalRotation: {x: -0, y: 0.98802316, z: -0, w: 0.15430583}
   m_LocalPosition: {x: -10, y: 1.6418, z: 0.5}
   m_LocalScale: {x: 139.3625, y: 139.36247, z: 139.3625}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 83.736, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 162.247, z: 0}
 --- !u!108 &847355781
 Light:
   m_ObjectHideFlags: 0
@@ -271,16 +271,16 @@ Light:
   m_GameObject: {fileID: 847355776}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 0.01
   m_Range: 6000
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -513,7 +513,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1127696331}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -42, y: 0, z: -193.8}
+  m_LocalPosition: {x: 53.7, y: 1.1, z: -198.7}
   m_LocalScale: {x: 14.451341, y: 14.451341, z: 14.451341}
   m_Children: []
   m_Father: {fileID: 0}
@@ -607,10 +607,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607731958}
-  m_LocalRotation: {x: -0, y: -0.2014428, z: -0, w: 0.9795003}
-  m_LocalPosition: {x: 53.4, y: 0, z: -175.9}
+  m_LocalRotation: {x: -0, y: 0.26192212, z: -0, w: 0.9650891}
+  m_LocalPosition: {x: 62.8, y: 0, z: -176.7}
   m_LocalScale: {x: 14.451341, y: 14.451341, z: 14.451341}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: -23.243, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 30.368, z: 0}
