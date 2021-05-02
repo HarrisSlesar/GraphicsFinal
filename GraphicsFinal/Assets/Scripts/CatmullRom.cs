@@ -14,6 +14,7 @@ public class CatmullRom : MonoBehaviour
     int maxSegmentAmount = 4; //maybe this should be 3?
     public float time = 0.0f;
     float maxTime = 2.0f;
+    float rotateVal = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +45,12 @@ public class CatmullRom : MonoBehaviour
             segment = 0;
         }
 
-        
+        gameObject.transform.Rotate(0.0f, rotateVal + 0.25f, 0.0f);
+
+        if (rotateVal >= 360f)
+        {
+            rotateVal = 0.0f;
+        }
     }
 
     private void OnDrawGizmos() //in case we want to make the catmull rom curve show up on screen
@@ -93,12 +99,12 @@ public class CatmullRom : MonoBehaviour
 
         //tmp1 = p0 * time * time * time;
 
-        Vector3 currentPosition = ((-0.5f * p0 + 1.5f * p1 - 1.5f * p2 + 0.5f * p3) * (time * time * time)
-             + (1f * p0 - 2.5f * p1 + 2f * p2 - 0.5f * p3) * (time * time)
-             + (-0.5f * p0 + 0.5f * p2) * time
-             + 1f * p1);
+        //Vector3 currentPosition = ((-0.5f * p0 + 1.5f * p1 - 1.5f * p2 + 0.5f * p3) * (time * time * time)
+        //     + (1f * p0 - 2.5f * p1 + 2f * p2 - 0.5f * p3) * (time * time)
+        //     + (-0.5f * p0 + 0.5f * p2) * time
+        //     + 1f * p1);
 
-        currentPosition = alpha * ((2 * p1) + (-p0 + p2) * time + (2 * p0 - 5 * p1 + 4 * p2 - p3)
+        Vector3 currentPosition = alpha * ((2 * p1) + (-p0 + p2) * time + (2 * p0 - 5 * p1 + 4 * p2 - p3)
             * (time * time) + (-p0 + 3 * p1 - 3 * p2 + p3) * (time * time * time));
 
         //q(t) = alpha * ((2*P1) + (-P0+P2) * t + (2*P0–5*P1 + 4*P2 — P3) * t² + (-P0 + 3*P1–3*P2 + P3) * t³))
