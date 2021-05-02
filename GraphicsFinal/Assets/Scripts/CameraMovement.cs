@@ -45,11 +45,21 @@ public class CameraMovement : MonoBehaviour
         }
 
         if (Input.GetKey(KeyCode.E))
+        {      
+            gameObject.transform.Rotate(0.0f, rotVal + 0.25f, 0.0f);
+        }
+
+        if (Input.GetKey(KeyCode.Q))
+        { 
+            gameObject.transform.Rotate(0.0f, rotVal - 0.25f, 0.0f);
+        }
+
+        if (Input.GetKey(KeyCode.Tab))
         {
             gameObject.transform.Translate(0.0f, yVal + 0.25f, 0.0f);
         }
 
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             gameObject.transform.Translate(0.0f, yVal - 0.25f, 0.0f);
         }
