@@ -768,8 +768,10 @@ MonoBehaviour:
   - {fileID: 793670651}
   looping: 1
   alpha: 0.5
-  segment: 0
   time: 0
+  maxTime: 2
+  timeSlower: 1
+  segment: 0
 --- !u!1 &1869950930
 GameObject:
   m_ObjectHideFlags: 0

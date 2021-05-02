@@ -7,13 +7,14 @@ public class CatmullRom : MonoBehaviour
     public Transform[] points;
     public bool looping = true;
     public float alpha = 0.5f;
+    public float time = 0.0f;
+    public float maxTime = 2.0f;
+    public int timeSlower = 1;
 
     Vector3 lastPosition;
     Vector3 newPosition;
     public int segment = 0;
     int maxSegmentAmount = 4; //maybe this should be 3?
-    public float time = 0.0f;
-    float maxTime = 2.0f;
     float rotateVal = 0.0f;
     // Start is called before the first frame update
     void Start()
@@ -27,17 +28,18 @@ public class CatmullRom : MonoBehaviour
         if (segment < maxSegmentAmount)
         {
             time += Time.deltaTime;
+            time *= timeSlower;
 
             lastPosition = newPosition;
             newPosition = GetPosition(time, segment);
 
             gameObject.transform.position = newPosition;
+        }
 
-            if (time >= maxTime)
-            {
-                segment++;
-                time = 0.0f;
-            }
+        if (time >= maxTime)
+        {
+            segment++;
+            time = 0.0f;
         }
 
         if (segment == maxSegmentAmount)
