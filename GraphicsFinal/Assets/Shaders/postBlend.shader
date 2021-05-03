@@ -25,12 +25,12 @@ Shader "postBlend"
              struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
+                float2 texcoord : TEXCOORD0;
             };
 
             struct v2f
             {
-                float2 uv : TEXCOORD0;
+                float2 texcoord : TEXCOORD0;
                 float4 vertex : SV_POSITION;
             };
 
@@ -49,17 +49,17 @@ Shader "postBlend"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
+                o.texcoord = v.texcoord;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
                 float gamma = 2.2;
-                float3 hdrColor = tex2D(_Texture0, i.uv).xyz;
-                float3 blur2Col = tex2D(_Texture1, i.uv).xyz;
-                float3 blur4Col = tex2D(_Texture2, i.uv).xyz;
-                float3 blur8Col = tex2D(_Texture3, i.uv).xyz;
+                float3 hdrColor = tex2D(_Texture0, i.texcoord).xyz;
+                float3 blur2Col = tex2D(_Texture1, i.texcoord).xyz;
+                float3 blur4Col = tex2D(_Texture2, i.texcoord).xyz;
+                float3 blur8Col = tex2D(_Texture3, i.texcoord).xyz;
                 float3 color;
                 color = 1.0 - (1.0 - hdrColor) * (1.0 - blur2Col) * (1.0 - blur4Col) * (1.0 - blur8Col);
                 // tone mapping

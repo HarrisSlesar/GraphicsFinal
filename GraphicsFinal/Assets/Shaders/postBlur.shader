@@ -24,12 +24,12 @@ Shader "postBlur"
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
+                float2 texcoord : TEXCOORD0;
             };
 
             struct v2f
             {
-                float2 uv : TEXCOORD0;
+                float2 texcoord : TEXCOORD0;
                 float4 vertex : SV_POSITION;
             };
 
@@ -44,7 +44,7 @@ Shader "postBlur"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
+                o.texcoord = v.texcoord;
                 return o;
             }
 
@@ -59,14 +59,14 @@ Shader "postBlur"
                 weight[4] = 0.016216;
                 float2 axis = float2(_AxisX, _AxisY);
                 // sample the texture
-                float3 c = tex2D(_MainTex, i.uv).xyz * weight[0];
+                float3 c = tex2D(_MainTex, i.texcoord).xyz * weight[0];
 
                 //Code inspiration from https://learnopengl.com/Advanced-Lighting/Bloom
 
                 for (int j = 1; j < 5; j++)
                 {
-                    c += tex2D(_MainTex, i.uv + float2(axis * j)).xyz * weight[j];
-                    c += tex2D(_MainTex, i.uv - float2(axis * j)).xyz * weight[j];
+                    c += tex2D(_MainTex, i.texcoord + float2(axis * j)).xyz * weight[j];
+                    c += tex2D(_MainTex, i.texcoord - float2(axis * j)).xyz * weight[j];
                 }
                 
 
