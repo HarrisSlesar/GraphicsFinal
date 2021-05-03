@@ -1,3 +1,4 @@
+//Bright shader reference from project 2
 Shader "postBright"
 {
     Properties
@@ -6,6 +7,7 @@ Shader "postBright"
     }
         SubShader
     {
+        //setting unity settings for best post-processing
         Cull Off
         ZTest Always
         ZWrite Off
@@ -36,7 +38,7 @@ Shader "postBright"
             v2f vert (VertexData v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = UnityObjectToClipPos(v.vertex); //Object to clip position
                 o.texcoord = v.texcoord;
                 return o;
             }
@@ -46,9 +48,9 @@ Shader "postBright"
                 // sample the texture
                 float4 col = tex2D(_MainTex, i.texcoord);
 
-                float brightness = dot(col.rgb, float3(0.2126, 0.7152, 0.0722));
+                float brightness = dot(col.rgb, float3(0.2126, 0.7152, 0.0722)); //makes the brightness 
 
-                return col * brightness;
+                return col * brightness; //combines texture with brightness and outputs
             }
             ENDCG
         }

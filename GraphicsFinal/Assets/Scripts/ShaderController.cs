@@ -5,6 +5,14 @@ using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.XR;
 
+public enum BUFFERNAMES
+{
+    fbo_c16_szHalf,
+    fbo_c16_szQuarter = 3,
+    fbo_c16_szEighth = 6,
+    fbo_c16x4 = 9
+}
+
 [ExecuteInEditMode, ImageEffectAllowedInSceneView]
 public class ShaderController : MonoBehaviour
 {
@@ -14,24 +22,17 @@ public class ShaderController : MonoBehaviour
     public Shader blurShader;
     public Shader brightShader;
     
-
     private RenderTexture[] renderTextureList = new RenderTexture[10];
 
     [NonSerialized]
     private Material bright,blur,blend;
 
-
-    private void Awake()
-    {
-
-       
-    }
-
-
-
+    //Runs when image needs to be rendered
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        CreateRenderTextures(Screen.width, Screen.height);
+        CreateRenderTextures(Screen.width, Screen.height); //Creates the render textures
+        
+        //Checks to see if the materials exist, if not it creates them
         if (bright == null)
         {
             bright = new Material(brightShader);
@@ -48,69 +49,77 @@ public class ShaderController : MonoBehaviour
             blur.hideFlags = HideFlags.HideAndDontSave;
         }
 
-        RenderTexture outputFBO = source;
-
-
-
-
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf], bright);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf];
-
-        float x = 1.0f / outputFBO.width;
-        blur.SetFloat("_AxisX", x);
-        blur.SetFloat("_AxisY", 0.0f);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 1], blur);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 1];
-
-        float y = 1.0f / outputFBO.height;
-        blur.SetFloat("_AxisX", 0.0f);
-        blur.SetFloat("_AxisY", y);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 2], blur);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 2];
-
-
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter], bright);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter];
-
-        x = 1.0f / outputFBO.width;
-        blur.SetFloat("_AxisX", x);
-        blur.SetFloat("_AxisY", 0.0f);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 1], blur);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 1];
-
-        y = 1.0f / outputFBO.height;
-        blur.SetFloat("_AxisX", 0.0f);
-        blur.SetFloat("_AxisY", y);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 2], blur);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 2];
-
+        RenderTexture outputFBO = source; //Sets the starting output to the input source
         
-        
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth], bright);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth];
+        //BRIGHT PASS HALF
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf], bright); //renders the current output to the correct location with bright shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf]; //Sets new output to be the correct render texture
 
-        x = 1.0f / outputFBO.width;
-        blur.SetFloat("_AxisX", x);
+        //BLUR PASS HALF X
+        float x = 1.0f / outputFBO.width; //Calculates x value
+        blur.SetFloat("_AxisX", x); //Sets the uniforms of the shader
         blur.SetFloat("_AxisY", 0.0f);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 1], blur);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 1];
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 1], blur); //renders to the correct texture with blur shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 1]; //sets new output to correct render texture
 
-        y = 1.0f / outputFBO.height;
-        blur.SetFloat("_AxisX", 0.0f);
+        //BLUR PASS HALF Y
+        float y = 1.0f / outputFBO.height; //Calculates Y value
+        blur.SetFloat("_AxisX", 0.0f); //Sets the uniforms
         blur.SetFloat("_AxisY", y);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 2], blur);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 2];
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 2], blur); //Renders from output to correct texture with blur shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 2]; //Sets output to be correct render texture
 
 
+        //BRIGHT PASS QUARTER
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter], bright); //renders the current output to the correct location with bright shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter];//Sets output to be correct render texture
+
+        //BLUR PASS QUARTER X
+        x = 1.0f / outputFBO.width;
+        blur.SetFloat("_AxisX", x);//Sets the uniforms of the shader
+        blur.SetFloat("_AxisY", 0.0f);
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 1], blur);//Renders from output to correct texture with blur shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 1];//Sets output to be correct render texture
+
+        //BLUR PASS QUARTER Y
+        y = 1.0f / outputFBO.height;
+        blur.SetFloat("_AxisX", 0.0f);//Sets the uniforms of the shader
+        blur.SetFloat("_AxisY", y);
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 2], blur);//Renders from output to correct texture with blur shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 2];//Sets output to be correct render texture
+
+
+        //BRIGHT PASS EIGHTH
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth], bright);//renders the current output to the correct location with bright shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth];//Sets output to be correct render texture
+
+        //BLUR PASS EIGHT X
+        x = 1.0f / outputFBO.width;
+        blur.SetFloat("_AxisX", x);//Sets the uniforms of the shader
+        blur.SetFloat("_AxisY", 0.0f);
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 1], blur);//Renders from output to correct texture with blur shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 1];//Sets output to be correct render texture
+
+        //BLUR PASS EIGHTH Y
+        y = 1.0f / outputFBO.height;
+        blur.SetFloat("_AxisX", 0.0f);//Sets the uniforms of the shader
+        blur.SetFloat("_AxisY", y);
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 2], blur);//Renders from output to correct texture with blur shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 2];//Sets output to be correct render texture
+
+        //FINAL COMPOSITE BLEND PASS
+
+        //sets all the uniform sampler textures
         blend.SetTexture("_Texture0", source);
         blend.SetTexture("_Texture1", renderTextureList[(int)BUFFERNAMES.fbo_c16_szHalf + 2]);
         blend.SetTexture("_Texture2", renderTextureList[(int)BUFFERNAMES.fbo_c16_szQuarter + 2]);
         blend.SetTexture("_Texture3", renderTextureList[(int)BUFFERNAMES.fbo_c16_szEighth + 2]);
-        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16x4], blend);
-        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16x4];
+
+        Graphics.Blit(outputFBO, renderTextureList[(int)BUFFERNAMES.fbo_c16x4], blend);//Renders from output to correct texture with blend shader
+        outputFBO = renderTextureList[(int)BUFFERNAMES.fbo_c16x4];//Sets output to be correct render texture
 
 
-
+        //Switch statement that checks an int to see which pass to display. Sets destination to the correct texture
         switch (passNum)
         {
             case 0:
@@ -150,12 +159,12 @@ public class ShaderController : MonoBehaviour
         }
 
 
-        ClearRenderTextures();
+        ClearRenderTextures(); //Clears render texture array
 
     }
 
 
-
+    //Creates render textures
     void CreateRenderTextures(int width, int hight)
     {
         RenderTexture temp;
@@ -175,6 +184,7 @@ public class ShaderController : MonoBehaviour
 
     }
 
+    //Clears render texture array
     void ClearRenderTextures()
     {
         for(int i = 0; i < renderTextureList.Length; i++)
@@ -185,11 +195,3 @@ public class ShaderController : MonoBehaviour
     }
 }
 
-
-public enum BUFFERNAMES
-{
-    fbo_c16_szHalf,
-    fbo_c16_szQuarter = 3,
-    fbo_c16_szEighth = 6,
-    fbo_c16x4 = 9
-}

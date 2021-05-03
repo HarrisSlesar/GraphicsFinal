@@ -29,15 +29,17 @@ Shader "Unlit/Texture"
 
             sampler2D _MainTex;
 
+            //Vertex Shader
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = UnityObjectToClipPos(v.vertex); //object to clip space transform
                 o.uv = v.uv;
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            //Fragment shader
+            fixed4 frag(v2f i) : SV_Target
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);

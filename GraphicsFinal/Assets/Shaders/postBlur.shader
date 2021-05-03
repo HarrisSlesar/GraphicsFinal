@@ -1,3 +1,4 @@
+//Blur shader referenced from Project 2
 Shader "postBlur"
 {
     Properties
@@ -33,10 +34,12 @@ Shader "postBlur"
                 float4 vertex : SV_POSITION;
             };
 
+            //Uniforms
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            uniform float _AxisX;
-            uniform float _AxisY;
+            uniform float _AxisX; //X axis uniform
+            uniform float _AxisY;//Y axis uniform
+
             //Weights and code referenced from https://learnopengl.com/Advanced-Lighting/Bloom
             float weight[5];
 
@@ -52,20 +55,23 @@ Shader "postBlur"
 
             fixed4 frag(v2f i) : SV_Target
             {
+                //filling the weight array
                 weight[0] = 0.227027;
                 weight[1] = 0.1945946;
                 weight[2] = 0.1216216;
                 weight[3] = 0.054054;
                 weight[4] = 0.016216;
-                float2 axis = float2(_AxisX, _AxisY);
+                float2 axis = float2(_AxisX, _AxisY); //Makes the axis vector
+                
                 // sample the texture
                 float3 c = tex2D(_MainTex, i.texcoord).xyz * weight[0];
 
                 //Code inspiration from https://learnopengl.com/Advanced-Lighting/Bloom
 
+                //blurs the image on the axis
                 for (int j = 1; j < 5; j++)
                 {
-                    c += tex2D(_MainTex, i.texcoord + float2(axis * j)).xyz * weight[j];
+                    c += tex2D(_MainTex, i.texcoord + float2(axis * j)).xyz * weight[j]; 
                     c += tex2D(_MainTex, i.texcoord - float2(axis * j)).xyz * weight[j];
                 }
                 

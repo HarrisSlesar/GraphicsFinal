@@ -2,7 +2,6 @@ Shader "Diffuse"
 {
     Properties
     {
-        _Color("Color", Color) = (1, 1, 1, 1) //The color of our object
         [NoScaleOffset] _Tex("Texture", 2D) = "white" {}
     }
         SubShader
@@ -17,12 +16,10 @@ Shader "Diffuse"
             #include "UnityCG.cginc"
             #include "UnityLightingCommon.cginc"
 
+            //Uniform sampler
             sampler2D _Tex;
             float4 _Tex_ST;
 
-          
-
-            uniform float4 _Color; //Use the above variables in here
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -54,21 +51,21 @@ Shader "Diffuse"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float3 normalDirection = normalize(i.normal);
-                float3 viewDirection = normalize(_WorldSpaceCameraPos - i.posWorld.xyz);
+                float3 normalDirection = normalize(i.normal); //Normal
+                float3 viewDirection = normalize(_WorldSpaceCameraPos - i.posWorld.xyz); //View direction
 
-                float3 lightpos = float3(unity_4LightPosX0.x, unity_4LightPosY0.x, unity_4LightPosZ0.x);
-                //float3 lightpos = _WorldSpaceLightPos0;
-                float3 lightColor = unity_LightColor[0].rgb;
-                //float3 lightColor = _LightColor0.rgb;
+                float3 lightpos = float3(unity_4LightPosX0.x, unity_4LightPosY0.x, unity_4LightPosZ0.x); //Light position of point light
+                //float3 lightpos = _WorldSpaceLightPos0; //Light position of directional light
+                float3 lightColor = unity_LightColor[0].rgb; //Light color of point light
+                //float3 lightColor = _LightColor0.rgb; //Light position of directional light
 
-
+                //light direction
                 float3 vert2LightSource = lightpos - i.posWorld.xyz;
                 float oneOverDistance = 1.0 / length(vert2LightSource);
                 float3 lightDirection = lightpos - i.posWorld.xyz * 1;
 
-                //float3 ambientLighting = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb; //Ambient component
-                float3 diffuseReflection = lightColor * _Color.rgb * max(0.0, dot(normalDirection, lightDirection)); //Diffuse component
+                
+                float3 diffuseReflection = lightColor * max(0.0, dot(normalDirection, lightDirection)); //Diffuse component
                 
 
                 float3 color = diffuseReflection * tex2D(_Tex, i.texcoord);
