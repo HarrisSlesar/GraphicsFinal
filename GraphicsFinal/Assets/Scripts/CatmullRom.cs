@@ -14,7 +14,7 @@ public class CatmullRom : MonoBehaviour
     Vector3 lastPosition;
     Vector3 newPosition;
     public int segment = 0;
-    int maxSegmentAmount = 4; //maybe this should be 3?
+    int maxSegmentAmount = 8; //maybe this should be 3?
     float rotateVal = 0.0f;
     // Start is called before the first frame update
     void Start()
@@ -75,12 +75,18 @@ public class CatmullRom : MonoBehaviour
 
         //newPosition = GetPosition(p0, p1, p2, p3);
 
-        //Gizmos.DrawLine(lastPosition, newPosition);
-        Gizmos.DrawLine(points[0].position, points[1].position);
-        Gizmos.DrawLine(points[1].position, points[2].position);
-        Gizmos.DrawLine(points[2].position, points[3].position);
-        Gizmos.DrawLine(points[3].position, points[0].position);
-        
+        //Gizmos.DrawLine(points[0].position, points[1].position);
+        //Gizmos.DrawLine(points[1].position, points[2].position);
+        //Gizmos.DrawLine(points[2].position, points[3].position);
+        //Gizmos.DrawLine(points[3].position, points[0].position);
+
+        for (int i = 0; i < maxSegmentAmount - 1; i++)
+        {
+            Gizmos.DrawLine(points[i].position, points[i + 1].position);
+        }
+
+        Gizmos.DrawLine(points[maxSegmentAmount - 1].position, points[0].position);
+
         //lastPosition = newPosition;
     }
 
@@ -90,9 +96,8 @@ public class CatmullRom : MonoBehaviour
         Vector3 p1 = points[(segment + 1) % maxSegmentAmount].position;
         Vector3 p2 = points[(segment + 2) % maxSegmentAmount].position;
         Vector3 p3 = points[(segment + 3) % maxSegmentAmount].position;
-        //Vector3 tmp1, tmp2, tmp3, tmp4;
 
-        time = time / 2;
+        time = time / 2; //this was to slow down the orbit for more viewability
 
         //float t0 = 0.0f;
         //float t1 = t0 + Mathf.Pow(p0.magnitude - p1.magnitude, alpha);
@@ -104,12 +109,10 @@ public class CatmullRom : MonoBehaviour
         //Vector3 currentPosition = ((-0.5f * p0 + 1.5f * p1 - 1.5f * p2 + 0.5f * p3) * (time * time * time)
         //     + (1f * p0 - 2.5f * p1 + 2f * p2 - 0.5f * p3) * (time * time)
         //     + (-0.5f * p0 + 0.5f * p2) * time
-        //     + 1f * p1);
+        //     + 1f * p1); //this was the old algorithm I was testing
 
         Vector3 currentPosition = alpha * ((2 * p1) + (-p0 + p2) * time + (2 * p0 - 5 * p1 + 4 * p2 - p3)
-            * (time * time) + (-p0 + 3 * p1 - 3 * p2 + p3) * (time * time * time));
-
-        //q(t) = alpha * ((2*P1) + (-P0+P2) * t + (2*P0–5*P1 + 4*P2 — P3) * t² + (-P0 + 3*P1–3*P2 + P3) * t³))
+            * (time * time) + (-p0 + 3 * p1 - 3 * p2 + p3) * (time * time * time)); //current algorithm for catmull rom
 
         return currentPosition;
     }
