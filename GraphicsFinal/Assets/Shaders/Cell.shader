@@ -3,7 +3,7 @@ Shader "Unlit/Cell"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Texture1 ("Texture", 2D) = "white" {}
+        
         [HDR]
         _AmbientColor("Ambient Color", Color) = (0.4,0.4,0.4,1)
         [HDR]
@@ -16,7 +16,8 @@ Shader "Unlit/Cell"
     }
     SubShader
     {
-        Tags { "LightMode" = "ForwardBase" }
+        Tags { "LightMode" = "ForwardBase"
+        "PassFlags" = "OnlyDirectional"}
         
 
         Pass
@@ -74,34 +75,37 @@ Shader "Unlit/Cell"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float3 lightpos = float3(unity_4LightPosX0.x, unity_4LightPosY0.x, unity_4LightPosZ0.x);
+                float3 lightpos = _WorldSpaceLightPos0;
 
                 float3 normal = normalize(i.worldNormal);
                 float NdotL = dot(lightpos, normal);
                 float lightIntensity = smoothstep(0, 0.01, NdotL);
 
                 float3 viewDir = normalize(i.viewDir);
-                float3 halfVector = normalize(lightpos + viewDir);
+
+                float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
                 float NdotH = dot(normal, halfVector);
+
+                
 
                 float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
                 float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
                 float4 specular = specularIntensitySmooth * _SpecularColor;
 
                 float4 rimDot = 1 - dot(viewDir, normal);
-                float rimIntensity = rimDot * pow(NdotL, _RimThreshold);
+                float rimIntensity = rimDot * NdotL;
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 
                 
-                float4 light = lightIntensity * unity_LightColor[0];
+                float4 light = lightIntensity * _LightColor0;
 
                 float4 col = tex2D(_MainTex, i.uv);
-                float4 col1 = tex2D(_Texture1, i.uv);
+                
 
                 float4 lightFull = _AmbientColor + light + specular + rim;
 
-                return col * lightFull + ((float4(1.0,1.0,1.0,1.0)-lightFull) * col1);
+                return col * lightFull;
             }
             ENDCG
         }

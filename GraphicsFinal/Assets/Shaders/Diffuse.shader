@@ -67,11 +67,11 @@ Shader "Diffuse"
                 float oneOverDistance = 1.0 / length(vert2LightSource);
                 float3 lightDirection = lightpos - i.posWorld.xyz * 1;
 
-                float3 ambientLighting = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb; //Ambient component
+                //float3 ambientLighting = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb; //Ambient component
                 float3 diffuseReflection = lightColor * _Color.rgb * max(0.0, dot(normalDirection, lightDirection)); //Diffuse component
                 
 
-                float3 color = (diffuseReflection * (ambientLighting)) * tex2D(_Tex, i.texcoord);
+                float3 color = diffuseReflection * tex2D(_Tex, i.texcoord);
                 return float4(color, 1.0);
             }
             ENDCG
