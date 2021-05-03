@@ -607,10 +607,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points:
-  - {fileID: 1838739941}
   - {fileID: 2073892958}
   - {fileID: 1411805104}
   - {fileID: 1199451419}
+  - {fileID: 1838739941}
   looping: 1
   alpha: 0.5
   time: 0
