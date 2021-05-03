@@ -23,8 +23,8 @@ public class ShaderController : MonoBehaviour
 
     private void Awake()
     {
-        
-        
+
+       
     }
 
 
@@ -148,9 +148,9 @@ public class ShaderController : MonoBehaviour
                 break;
 
         }
-        
 
 
+        ClearRenderTextures();
 
     }
 
@@ -175,6 +175,14 @@ public class ShaderController : MonoBehaviour
 
     }
 
+    void ClearRenderTextures()
+    {
+        for(int i = 0; i < renderTextureList.Length; i++)
+        {
+            DestroyImmediate(renderTextureList[i]);
+            renderTextureList[i] = null;
+        }
+    }
 }
 
 

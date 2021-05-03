@@ -64,22 +64,22 @@ Shader "Earth"
                 //float3 lightColor = _LightColor0.rgb;
 
 
-                float3 vert2LightSource = lightpos - i.posWorld.xyz;
+                float3 vert2LightSource = i.posWorld.xyz - lightpos;
                 float oneOverDistance = 1.0 / length(vert2LightSource);
                 float3 lightDirection = lightpos - i.posWorld.xyz * 1;
 
-                float3 ambientLighting = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb; //Ambient component
+                //float3 ambientLighting = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb; //Ambient component
                 float3 diffuseReflection = lightColor * max(0.0, dot(normalDirection, lightDirection)); //Diffuse component
 
 
 
-                float3 color = diffuseReflection*tex2D(_Tex, i.texcoord);
-                float3 color1 = (float3(1.0,1.0,1.0)-diffuseReflection)*tex2D(_Tex1, i.texcoord);
+                float3 color = (diffuseReflection)*tex2D(_Tex, i.texcoord);
+                float3 color1 = (1-diffuseReflection)*tex2D(_Tex1, i.texcoord);
 
 
 
                 //return float4(color, 1.0);
-                return float4(color + color1, 1.0);
+                return float4((color + color1), 1.0);
 
             }
             ENDCG

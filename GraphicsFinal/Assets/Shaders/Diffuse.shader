@@ -71,7 +71,7 @@ Shader "Diffuse"
                 float3 diffuseReflection = lightColor * _Color.rgb * max(0.0, dot(normalDirection, lightDirection)); //Diffuse component
                 
 
-                float3 color = (diffuseReflection) * tex2D(_Tex, i.texcoord);
+                float3 color = (diffuseReflection * (ambientLighting)) * tex2D(_Tex, i.texcoord);
                 return float4(color, 1.0);
             }
             ENDCG

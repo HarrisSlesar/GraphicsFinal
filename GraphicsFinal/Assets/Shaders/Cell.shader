@@ -3,6 +3,7 @@ Shader "Unlit/Cell"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Texture1 ("Texture", 2D) = "white" {}
         [HDR]
         _AmbientColor("Ambient Color", Color) = (0.4,0.4,0.4,1)
         [HDR]
@@ -15,8 +16,7 @@ Shader "Unlit/Cell"
     }
     SubShader
     {
-        Tags { "LightMode" = "ForwardBase"
-                "PassFlags" = "OnlyDirectional" }
+        Tags { "LightMode" = "ForwardBase" }
         
 
         Pass
@@ -24,10 +24,11 @@ Shader "Unlit/Cell"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            
+
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -37,22 +38,30 @@ Shader "Unlit/Cell"
 
             struct v2f
             {
+
                 float2 uv : TEXCOORD0;
                 float3 viewDir : TEXCOORD1;
+
                 float3 worldNormal : NORMAL;
                 float4 vertex : SV_POSITION;
+
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
-            v2f vert (appdata v)
+            sampler2D _Texture1;
+            float4 _Texture1_ST;
+
+            v2f vert(appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
+
+
                 return o;
             }
 
@@ -63,13 +72,16 @@ Shader "Unlit/Cell"
             float _RimAmount;
             float _RimThreshold;
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag(v2f i) : SV_Target
             {
+                float3 lightpos = float3(unity_4LightPosX0.x, unity_4LightPosY0.x, unity_4LightPosZ0.x);
+
                 float3 normal = normalize(i.worldNormal);
-                float NdotL = dot(_WorldSpaceLightPos0, normal);
+                float NdotL = dot(lightpos, normal);
                 float lightIntensity = smoothstep(0, 0.01, NdotL);
+
                 float3 viewDir = normalize(i.viewDir);
-                float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
+                float3 halfVector = normalize(lightpos + viewDir);
                 float NdotH = dot(normal, halfVector);
 
                 float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
@@ -81,10 +93,15 @@ Shader "Unlit/Cell"
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 
-                fixed4 col = tex2D(_MainTex, i.uv);
-                float4 light = lightIntensity * _LightColor0;
                 
-                return col * (_AmbientColor + light + specular + rim);
+                float4 light = lightIntensity * unity_LightColor[0];
+
+                float4 col = tex2D(_MainTex, i.uv);
+                float4 col1 = tex2D(_Texture1, i.uv);
+
+                float4 lightFull = _AmbientColor + light + specular + rim;
+
+                return col * lightFull + ((float4(1.0,1.0,1.0,1.0)-lightFull) * col1);
             }
             ENDCG
         }
