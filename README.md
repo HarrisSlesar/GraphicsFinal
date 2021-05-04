@@ -1,14 +1,17 @@
-# animal3D-SDK-202101SP
-animal3D SDK and related course frameworks for spring 2021.
+# Graphics Final Project Repository
+Harris Slesar and Matthew Esslie Final Project for Spring 2021
 
-Launch framework by running animal3D SDK/LAUNCH_VS.bat
+Launch Unity Project using Unity version 2020.2.7f1 or higher
 
-Build solution with ctrl+shift+b
+Make sure scene named DemoScene is loaded by opening it from Assets/Scenes in the Project window
 
-Launch with F5
+Launch by clicking play
 
-In new window navigate to File/DEBUG: Demo project hot build & load
+Click on the Game window to control the camera
 
-Click on desired load option
+WASD to move
+Q and R to rotate
+LShift and Tab to move up and down
 
-Use j/k to switch between the modes and the controls displayed in the on-screen text to navigate the scene
+Space to pause the orbits of the planets
+
